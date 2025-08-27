@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EOL Management Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+   <link rel="stylesheet" href="/styles.css">
+   <script src="/script.js" defer></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-title">
+                <div class="header-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h1>EOL Management Dashboard</h1>
+            </div>
+            <div class="header-actions">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <span id="welcomeUser">Welcome back!</span>
+                </div>
+                <button onclick="logout()" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </header>
+
+        <!-- Stats Overview -->
+        <div class="stats-grid">
+            <div class="stat-card stat-terminated">
+                <div class="stat-icon">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number" id="totalTerminated">
+                        <div class="loading-spinner"></div>
+                    </div>
+                    <div class="stat-label">Terminated</div>
+                </div>
+            </div>
+            
+            <div class="stat-card stat-contract">
+                <div class="stat-icon">
+                    <i class="fas fa-file-signature"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number" id="totalContractSigned">
+                        <div class="loading-spinner"></div>
+                    </div>
+                    <div class="stat-label">Contract Signed</div>
+                </div>
+            </div>
+            
+            <div class="stat-card stat-verified">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number" id="totalVerified">
+                        <div class="loading-spinner"></div>
+                    </div>
+                    <div class="stat-label">Verified</div>
+                </div>
+            </div>
+            
+            <div class="stat-card stat-approved">
+                <div class="stat-icon">
+                    <i class="fas fa-thumbs-up"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number" id="totalApproved">
+                        <div class="loading-spinner"></div>
+                    </div>
+                    <div class="stat-label">Approved</div>
+                </div>
+            </div>
+            
+            <div class="stat-card stat-active">
+                <div class="stat-icon">
+                    <i class="fas fa-play-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number" id="totalActive">
+                        <div class="loading-spinner"></div>
+                    </div>
+                    <div class="stat-label">Active</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Terminated Section -->
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-icon" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <h2 class="section-title">Terminated Units</h2>
+                <div class="section-count" id="terminatedCount">0</div>
+            </div>
+            <div class="units-grid container-eolsTerminated">
+                <!-- Units will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Contract Signed Section -->
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                    <i class="fas fa-file-signature"></i>
+                </div>
+                <h2 class="section-title">Contract Signed Units</h2>
+                <div class="section-count" id="contractSignedCount">0</div>
+            </div>
+            <div class="units-grid container-eolsContractSigned">
+                <!-- Units will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Verified Section -->
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2 class="section-title">Verified Units</h2>
+                <div class="section-count" id="verifiedCount">0</div>
+            </div>
+            <div class="units-grid container-eolsVerified">
+                <!-- Units will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Approved Section -->
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                    <i class="fas fa-thumbs-up"></i>
+                </div>
+                <h2 class="section-title">Approved Units</h2>
+                <div class="section-count" id="approvedCount">0</div>
+            </div>
+            <div class="units-grid container-eolsApproved">
+                <!-- Units will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Active Section -->
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-icon" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
+                    <i class="fas fa-play-circle"></i>
+                </div>
+                <h2 class="section-title">Active Units</h2>
+                <div class="section-count" id="activeCount">0</div>
+            </div>
+            <div class="units-grid container-eolsActive">
+                <!-- Units will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    
+</body>
+</html>
