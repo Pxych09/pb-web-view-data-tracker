@@ -416,15 +416,15 @@
 
         .buildings-grid {
             display: flex;
+            align-items: center;
             flex-wrap: wrap;
-            gap: 8px;
-            justify-content: center;
+            gap: 6px;
         }
 
         .building-count {
             background: rgba(255, 255, 255, 0.7);
             padding: 4px 8px;
-            border-radius: 12px;
+            border-radius: 6px;
             font-size: 12px;
             font-weight: 600;
             color: #374151;
@@ -855,6 +855,67 @@
             .detail-item {
                 padding: 8px 10px;
             }
+
+            .stat-card {
+                display: grid;
+            }            
+            .stat-card > div{
+                margin: 0;
+            }
+            .stat-icon {
+                display: none;
+            }
+            
+            /* Active */
+            .stat-active {
+            background: linear-gradient(135deg, #E8F5E9, #C8E6C9); /* soft green gradient */
+            border: 1px solid #4CAF50;
+            }
+            .stat-active .stat-label {
+            color: #2E7D32; /* dark green text */
+            font-weight: 600;
+            }
+
+            /* Approved */
+            .stat-approved {
+            background: linear-gradient(135deg, #E3F2FD, #BBDEFB); /* soft blue gradient */
+            border: 1px solid #2196F3;
+            }
+            .stat-approved .stat-label {
+            color: #1565C0;
+            font-weight: 600;
+            }
+
+            /* Terminated */
+            .stat-terminated {
+            background: linear-gradient(135deg, #FFEBEE, #FFCDD2); /* soft red gradient */
+            border: 1px solid #F44336;
+            }
+            .stat-terminated .stat-label {
+            color: #B71C1C;
+            font-weight: 600;
+            }
+
+            /* Contract Signed */
+            .stat-contract {
+            background: linear-gradient(135deg, #F3E5F5, #E1BEE7); /* soft purple gradient */
+            border: 1px solid #9C27B0;
+            }
+            .stat-contract .stat-label {
+            color: #6A1B9A;
+            font-weight: 600;
+            }
+
+            /* Verified */
+            .stat-verified {
+            background: linear-gradient(135deg, #FFF8E1, #FFECB3); /* soft amber gradient */
+            border: 1px solid #FFC107;
+            }
+            .stat-verified .stat-label {
+            color: #FF8F00;
+            font-weight: 600;
+            }
+
         }
 
         #welcomeUser,
