@@ -54,6 +54,45 @@
             </div>
         </div>
 
+        <!-- Move-Out Alerts Section -->
+        <div class="moveout-alerts-section">
+            <h4 class="moveout-title">Active EOL for:</h4>
+            <div class="moveout-tabs">
+                <button class="moveout-tab active" data-period="yesterday">
+                    <i class="fas fa-arrow-left"></i>
+                    Yesterday
+                    <span class="tab-count" id="yesterdayCount">0</span>
+                </button>
+                <button class="moveout-tab" data-period="today">
+                    <i class="fas fa-calendar-day"></i>
+                    Today
+                    <span class="tab-count" id="todayCount">0</span>
+                </button>
+                <button class="moveout-tab" data-period="tomorrow">
+                    <i class="fas fa-arrow-right"></i>
+                    Tomorrow
+                    <span class="tab-count" id="tomorrowCount">0</span>
+                </button>
+            </div>
+
+            <div class="moveout-loading" id="moveoutLoading">
+                <div class="loading-spinner"></div>
+                <p>Loading move-out data...</p>
+            </div>
+
+            <div class="moveout-content">
+                <div class="moveout-units" id="yesterdayUnits">
+                    <!-- Yesterday units will appear here -->
+                </div>
+                <div class="moveout-units" id="todayUnits" style="display: none;">
+                    <!-- Today units will appear here -->
+                </div>
+                <div class="moveout-units" id="tomorrowUnits" style="display: none;">
+                    <!-- Tomorrow units will appear here -->
+                </div>
+            </div>
+        </div>
+
         <!-- Stats Overview -->
         <div class="stats-grid">
             <div class="stat-card stat-terminated">
