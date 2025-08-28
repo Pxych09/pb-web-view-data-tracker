@@ -113,11 +113,12 @@
 
         .search-header {
             display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 15px;
+            /* gap: 15px; */
             margin-bottom: 25px;
-            padding-bottom: 15px;
             border-bottom: 2px solid #f3f4f6;
+            /* border: 1px solid red; */
         }
 
         .search-icon {
@@ -601,43 +602,43 @@
             body {
                 font-size: 14px;
             }
-            
+
             .dashboard-container {
                 padding: 10px;
             }
-            
+
             .header {
                 padding: 15px;
                 flex-direction: column;
                 gap: 12px;
                 margin-bottom: 20px;
             }
-            
+
             .header-title {
                 flex-direction: column;
                 gap: 10px;
                 text-align: center;
             }
-            
+
             .header-title h1 {
                 font-size: 22px;
             }
-            
+
             .header-actions {
                 width: 100%;
                 justify-content: space-between;
             }
-            
+
             .user-info {
                 font-size: 13px;
             }
-            
+
             .user-avatar {
                 width: 30px;
                 height: 30px;
                 font-size: 12px;
             }
-            
+
             .logout-btn {
                 padding: 8px 16px;
                 font-size: 13px;
@@ -678,106 +679,106 @@
                 border-radius: 6px;
                 border-left: 3px solid #e5e7eb;
             }
-            
+
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 12px;
                 margin-bottom: 20px;
             }
-            
+
             .stat-card {
                 padding: 16px 12px;
             }
-            
+
             .stat-icon {
                 width: 40px;
                 height: 40px;
                 margin: 0 auto 10px;
                 font-size: 16px;
             }
-            
+
             .stat-number {
                 font-size: 24px;
                 margin-bottom: 6px;
             }
-            
+
             .stat-label {
                 font-size: 12px;
             }
-            
+
             .section-container {
                 padding: 16px;
                 margin-bottom: 16px;
                 border-radius: 16px;
             }
-            
+
             .section-header {
                 margin-bottom: 16px;
                 padding-bottom: 12px;
             }
-            
+
             .section-icon {
                 width: 35px;
                 height: 35px;
                 font-size: 16px;
             }
-            
+
             .section-title {
                 font-size: 18px;
             }
-            
+
             .section-count {
                 padding: 4px 10px;
                 font-size: 12px;
             }
-            
+
             .unit-card {
                 margin-bottom: 10px;
                 border-radius: 10px;
             }
-            
+
             .unit-header {
                 padding: 12px 16px;
             }
-            
+
             .unit-name {
                 font-size: 15px;
             }
-            
+
             .expand-icon {
                 font-size: 12px;
             }
-            
+
             .unit-details {
                 padding: 16px;
             }
-            
+
             .detail-grid {
                 grid-template-columns: 1fr;
                 gap: 12px;
             }
-            
+
             .detail-item {
                 background: #f8fafc;
                 padding: 10px 12px;
                 border-radius: 8px;
                 border-left: 3px solid #e5e7eb;
             }
-            
+
             .detail-label {
                 font-size: 11px;
                 margin-bottom: 4px;
             }
-            
+
             .detail-value {
                 font-size: 13px;
                 font-weight: 600;
             }
-            
+
             .empty-state {
                 padding: 30px 15px;
             }
-            
+
             .empty-icon {
                 font-size: 36px;
                 margin-bottom: 12px;
@@ -788,12 +789,12 @@
             .header-title h1 {
                 font-size: 20px;
             }
-            
+
             .stats-grid {
                 grid-template-columns: 1fr;
                 gap: 10px;
             }
-            
+
             .stat-card {
                 display: flex;
                 align-items: center;
@@ -801,27 +802,27 @@
                 padding: 12px 16px;
                 gap: 15px;
             }
-            
+
             .stat-icon {
                 width: 45px;
                 height: 45px;
                 margin: 0;
                 flex-shrink: 0;
             }
-            
+
             .stat-content {
                 flex: 1;
             }
-            
+
             .stat-number {
                 font-size: 20px;
                 margin-bottom: 2px;
             }
-            
+
             .stat-label {
                 font-size: 13px;
             }
-            
+
             .section-container {
                 padding: 12px;
             }
@@ -839,33 +840,33 @@
                 left: 14px;
                 font-size: 14px;
             }
-            
+
             .unit-header {
                 padding: 10px 14px;
             }
-            
+
             .unit-name {
                 font-size: 14px;
             }
-            
+
             .unit-details {
                 padding: 12px;
             }
-            
+
             .detail-item {
                 padding: 8px 10px;
             }
 
             .stat-card {
                 display: grid;
-            }            
+            }
             .stat-card > div{
                 margin: 0;
             }
             .stat-icon {
                 display: none;
             }
-            
+
             /* Active */
             .stat-active {
             background: linear-gradient(135deg, #E8F5E9, #C8E6C9); /* soft green gradient */
@@ -916,6 +917,12 @@
             font-weight: 600;
             }
 
+            .search-header .search-icon {
+                display: none;
+            }
+            .search-header .search-title {
+                font-size: 1.30em;
+            }
         }
 
         #welcomeUser,
