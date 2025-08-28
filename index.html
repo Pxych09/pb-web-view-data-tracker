@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EOL Management Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/8358/8358908.png" type="image/png">
    <link rel="stylesheet" href="/styles.css">
    <script src="/script.js" defer></script>
 </head>
@@ -13,9 +14,6 @@
         <!-- Header -->
         <header class="header">
             <div class="header-title">
-                <div class="header-icon">
-                    <i class="fas fa-chart-line"></i>
-                </div>
                 <h1>EOL Management Dashboard</h1>
             </div>
             <div class="header-actions">
@@ -28,6 +26,33 @@
                 </button>
             </div>
         </header>
+
+        <!-- Search Section -->
+        <div class="search-section">
+            <div class="search-header">
+                <div class="search-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h2 class="search-title">Search Units</h2>
+            </div>
+            <div class="search-container">
+                <i class="fas fa-search search-input-icon"></i>
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    id="searchInput" 
+                    placeholder="Enter unit name to search across all sheets..."
+                    autocomplete="off"
+                >
+            </div>
+            <div class="search-loading" id="searchLoading">
+                <div class="loading-spinner"></div>
+                <p>Searching...</p>
+            </div>
+            <div class="search-results" id="searchResults">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
 
         <!-- Stats Overview -->
         <div class="stats-grid">
@@ -163,6 +188,6 @@
         </div>
     </div>
 
-    
+
 </body>
 </html>
