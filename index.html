@@ -3,230 +3,284 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EOL Management Dashboard for property management">
     <title>EOL Management Dashboard</title>
+    
+    <!-- Preload critical resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Critical CSS and resources -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/8358/8358908.png" type="image/png">
-   <link rel="stylesheet" href="/styles.css">
-   <script src="/script.js" defer></script>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/script.js" defer></script>
 </head>
 <body>
     <div class="dashboard-container">
         <!-- Header -->
-        <header class="header">
+        <header class="header" role="banner">
             <div class="header-title">
                 <h1>EOL Management Dashboard</h1>
             </div>
             <div class="header-actions">
                 <div class="user-info">
-                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div class="user-avatar" id="userAvatar" aria-label="User avatar">U</div>
                     <span id="welcomeUser">Welcome back!</span>
                 </div>
-                <button onclick="logout()" class="logout-btn">
-                    <i class="fas fa-sign-out-alt"></i> Logout
+                <button onclick="logout()" class="logout-btn" aria-label="Logout">
+                    <i class="fas fa-sign-out-alt" aria-hidden="true"></i> 
+                    Logout
                 </button>
             </div>
         </header>
 
         <!-- Search Section -->
-        <div class="search-section">
+        <section class="search-section" role="search" aria-label="Unit search">
             <div class="search-header">
-                <div class="search-icon">
-                    <i class="fas fa-search"></i>
-                </div>
                 <h2 class="search-title">Search Units</h2>
             </div>
+            
             <div class="search-container">
-                <i class="fas fa-search search-input-icon"></i>
+                <i class="fas fa-search search-input-icon" aria-hidden="true"></i>
                 <input 
                     type="text" 
                     class="search-input" 
                     id="searchInput" 
                     placeholder="Enter unit name to search across all sheets..."
                     autocomplete="off"
+                    aria-label="Search units by name"
                 >
             </div>
-            <div class="search-loading" id="searchLoading">
-                <div class="loading-spinner"></div>
+            
+            <div class="search-loading" id="searchLoading" role="status" aria-live="polite">
+                <div class="loading-spinner" aria-hidden="true"></div>
                 <p>Searching...</p>
             </div>
-            <div class="search-results" id="searchResults">
+            
+            <div class="search-results" id="searchResults" role="region" aria-live="polite" aria-label="Search results">
                 <!-- Search results will appear here -->
             </div>
-        </div>
+        </section>
 
         <!-- Move-Out Alerts Section -->
-        <div class="moveout-alerts-section">
-            <h4 class="moveout-title">Active EOL for:</h4>
-            <div class="moveout-tabs">
-                <button class="moveout-tab active" data-period="yesterday">
-                    <i class="fas fa-arrow-left"></i>
+        <section class="moveout-alerts-section" aria-label="Move-out alerts">
+            <h3 class="moveout-title">End of Lease for:</h3>
+            
+            <div class="moveout-tabs" role="tablist" aria-label="Move-out periods">
+                <button class="moveout-tab" data-period="yesterday" role="tab" aria-selected="false" aria-controls="yesterdayUnits">
+                    <i class="fas fa-arrow-left" aria-hidden="true"></i>
                     Yesterday
                     <span class="tab-count" id="yesterdayCount">0</span>
                 </button>
-                <button class="moveout-tab" data-period="today">
-                    <i class="fas fa-calendar-day"></i>
+                <button class="moveout-tab active" data-period="today" role="tab" aria-selected="true" aria-controls="todayUnits">
+                    <i class="fas fa-calendar-day" aria-hidden="true"></i>
                     Today
                     <span class="tab-count" id="todayCount">0</span>
                 </button>
-                <button class="moveout-tab" data-period="tomorrow">
-                    <i class="fas fa-arrow-right"></i>
+                <button class="moveout-tab" data-period="tomorrow" role="tab" aria-selected="false" aria-controls="tomorrowUnits">
+                    <i class="fas fa-arrow-right" aria-hidden="true"></i>
                     Tomorrow
                     <span class="tab-count" id="tomorrowCount">0</span>
                 </button>
             </div>
 
-            <div class="moveout-loading" id="moveoutLoading">
-                <div class="loading-spinner"></div>
+            <div class="moveout-loading" id="moveoutLoading" role="status" aria-live="polite">
+                <div class="loading-spinner" aria-hidden="true"></div>
                 <p>Loading move-out data...</p>
             </div>
 
             <div class="moveout-content">
-                <div class="moveout-units" id="yesterdayUnits">
+                <div class="moveout-units" id="yesterdayUnits" role="tabpanel" tabindex="0" aria-labelledby="yesterday-tab">
                     <!-- Yesterday units will appear here -->
                 </div>
-                <div class="moveout-units" id="todayUnits" style="display: none;">
+                <div class="moveout-units" id="todayUnits" role="tabpanel" tabindex="0" aria-labelledby="today-tab" style="display: none;">
                     <!-- Today units will appear here -->
                 </div>
-                <div class="moveout-units" id="tomorrowUnits" style="display: none;">
+                <div class="moveout-units" id="tomorrowUnits" role="tabpanel" tabindex="0" aria-labelledby="tomorrow-tab" style="display: none;">
                     <!-- Tomorrow units will appear here -->
                 </div>
             </div>
-        </div>
+        </section>
 
         <!-- Stats Overview -->
-        <div class="stats-grid">
-            <div class="stat-card stat-terminated">
-                <div class="stat-icon">
-                    <i class="fas fa-times-circle"></i>
-                </div>
-                <div class="stat-content">
-                    <div class="stat-number" id="totalTerminated">
-                        <div class="loading-spinner"></div>
+        <section class="stats-section" aria-label="Statistics overview">
+            <div class="stats-grid">
+                <div class="stat-card stat-terminated">
+                    <div class="stat-icon" aria-hidden="true" onclick="document.getElementById('forscroll-terminated').scrollIntoView({ behavior: 'smooth' });">
+                        <i class="fas fa-times-circle"></i>
                     </div>
-                    <div class="stat-label">Terminated</div>
-                </div>
-            </div>
-            
-            <div class="stat-card stat-contract">
-                <div class="stat-icon">
-                    <i class="fas fa-file-signature"></i>
-                </div>
-                <div class="stat-content">
-                    <div class="stat-number" id="totalContractSigned">
-                        <div class="loading-spinner"></div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="totalTerminated">
+                            <div class="loading-spinner" aria-hidden="true"></div>
+                        </div>
+                        <div class="stat-label">Terminated</div>
                     </div>
-                    <div class="stat-label">Contract Signed</div>
                 </div>
-            </div>
-            
-            <div class="stat-card stat-verified">
-                <div class="stat-icon">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <div class="stat-content">
-                    <div class="stat-number" id="totalVerified">
-                        <div class="loading-spinner"></div>
+                
+                <div class="stat-card stat-contract">
+                    <div class="stat-icon" aria-hidden="true" onclick="document.getElementById('forscroll-contract').scrollIntoView({ behavior: 'smooth' });">
+                        <i class="fas fa-file-signature"></i>
                     </div>
-                    <div class="stat-label">Verified</div>
-                </div>
-            </div>
-            
-            <div class="stat-card stat-approved">
-                <div class="stat-icon">
-                    <i class="fas fa-thumbs-up"></i>
-                </div>
-                <div class="stat-content">
-                    <div class="stat-number" id="totalApproved">
-                        <div class="loading-spinner"></div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="totalContractSigned">
+                            <div class="loading-spinner" aria-hidden="true"></div>
+                        </div>
+                        <div class="stat-label">Contract Signed</div>
                     </div>
-                    <div class="stat-label">Approved</div>
                 </div>
-            </div>
-            
-            <div class="stat-card stat-active">
-                <div class="stat-icon">
-                    <i class="fas fa-play-circle"></i>
-                </div>
-                <div class="stat-content">
-                    <div class="stat-number" id="totalActive">
-                        <div class="loading-spinner"></div>
+                
+                <div class="stat-card stat-verified">
+                    <div class="stat-icon" aria-hidden="true" onclick="document.getElementById('forscroll-verified').scrollIntoView({ behavior: 'smooth' });">
+                        <i class="fas fa-check-circle"></i>
                     </div>
-                    <div class="stat-label">Active</div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="totalVerified">
+                            <div class="loading-spinner" aria-hidden="true"></div>
+                        </div>
+                        <div class="stat-label">Verified</div>
+                    </div>
                 </div>
-            </div>
-        </div>
+                
+                <div class="stat-card stat-approved">
+                    <div class="stat-icon" aria-hidden="true" onclick="document.getElementById('forscroll-approved').scrollIntoView({ behavior: 'smooth' });">
+                        <i class="fas fa-thumbs-up"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="totalApproved">
+                            <div class="loading-spinner" aria-hidden="true"></div>
+                        </div>
+                        <div class="stat-label">Approved</div>
+                    </div>
+                </div>
 
-        <!-- Terminated Section -->
-        <div class="section-container">
-            <div class="section-header">
-                <div class="section-icon" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
-                    <i class="fas fa-times-circle"></i>
+                <div class="stat-card stat-pending">
+                    <div class="stat-icon" aria-hidden="true" onclick="document.getElementById('forscroll-pending').scrollIntoView({ behavior: 'smooth' });">
+                        <i class="fas fa-thumbs-up"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="totalPending">
+                            <div class="loading-spinner" aria-hidden="true"></div>
+                        </div>
+                        <div class="stat-label">Pending</div>
+                    </div>
                 </div>
-                <h2 class="section-title">Terminated Units</h2>
-                <div class="section-count" id="terminatedCount">0</div>
+                
+                <div class="stat-card stat-active">
+                    <div class="stat-icon" aria-hidden="true" onclick="document.getElementById('forscroll-active').scrollIntoView({ behavior: 'smooth' });">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="totalActive">
+                            <div class="loading-spinner" aria-hidden="true"></div>
+                        </div>
+                        <div class="stat-label">Active</div>
+                    </div>
+                </div>
             </div>
-            <div class="units-grid container-eolsTerminated">
-                <!-- Units will be loaded here -->
-            </div>
-        </div>
+        </section>
 
-        <!-- Contract Signed Section -->
-        <div class="section-container">
-            <div class="section-header">
-                <div class="section-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
-                    <i class="fas fa-file-signature"></i>
+        <!-- Main Content Sections -->
+        <main class="main-sections">
+            <!-- Terminated Section -->
+            <div id="forscroll-terminated"></div>
+            <section class="section-container" aria-labelledby="terminated-title">
+                <div class="section-header">
+                    <div class="section-icon" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);" aria-hidden="true">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <h2 class="section-title" id="terminated-title">Terminated Units</h2>
+                    <div class="section-count" id="terminatedCount">0</div>
                 </div>
-                <h2 class="section-title">Contract Signed Units</h2>
-                <div class="section-count" id="contractSignedCount">0</div>
-            </div>
-            <div class="units-grid container-eolsContractSigned">
-                <!-- Units will be loaded here -->
-            </div>
-        </div>
+                <div class="units-grid container-eolsTerminated" role="region" aria-live="polite">
+                    <!-- Units will be loaded here -->
+                </div>
+            </section>
 
-        <!-- Verified Section -->
-        <div class="section-container">
-            <div class="section-header">
-                <div class="section-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
-                    <i class="fas fa-check-circle"></i>
+            <!-- Contract Signed Section -->
+            <div id="forscroll-contract"></div>
+            <section class="section-container" aria-labelledby="contract-signed-title">
+                <div class="section-header">
+                    <div class="section-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);" aria-hidden="true">
+                        <i class="fas fa-file-signature"></i>
+                    </div>
+                    <h2 class="section-title" id="contract-signed-title">Contract Signed Units</h2>
+                    <div class="section-count" id="contractSignedCount">0</div>
                 </div>
-                <h2 class="section-title">Verified Units</h2>
-                <div class="section-count" id="verifiedCount">0</div>
-            </div>
-            <div class="units-grid container-eolsVerified">
-                <!-- Units will be loaded here -->
-            </div>
-        </div>
+                <div class="units-grid container-eolsContractSigned" role="region" aria-live="polite">
+                    <!-- Units will be loaded here -->
+                </div>
+            </section>
 
-        <!-- Approved Section -->
-        <div class="section-container">
-            <div class="section-header">
-                <div class="section-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
-                    <i class="fas fa-thumbs-up"></i>
+            <!-- Verified Section -->
+            <div id="forscroll-verified"></div>
+            <section class="section-container" aria-labelledby="verified-title">
+                <div class="section-header">
+                    <div class="section-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);" aria-hidden="true">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h2 class="section-title" id="verified-title">Verified Units</h2>
+                    <div class="section-count" id="verifiedCount">0</div>
                 </div>
-                <h2 class="section-title">Approved Units</h2>
-                <div class="section-count" id="approvedCount">0</div>
-            </div>
-            <div class="units-grid container-eolsApproved">
-                <!-- Units will be loaded here -->
-            </div>
-        </div>
+                <div class="units-grid container-eolsVerified" role="region" aria-live="polite">
+                    <!-- Units will be loaded here -->
+                </div>
+            </section>
 
-        <!-- Active Section -->
-        <div class="section-container">
-            <div class="section-header">
-                <div class="section-icon" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
-                    <i class="fas fa-play-circle"></i>
+            <!-- Approved Section -->
+            <div id="forscroll-approved"></div>
+            <section class="section-container" aria-labelledby="approved-title">
+                <div class="section-header">
+                    <div class="section-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);" aria-hidden="true">
+                        <i class="fas fa-thumbs-up"></i>
+                    </div>
+                    <h2 class="section-title" id="approved-title">Approved Units</h2>
+                    <div class="section-count" id="approvedCount">0</div>
                 </div>
-                <h2 class="section-title">Active Units</h2>
-                <div class="section-count" id="activeCount">0</div>
-            </div>
-            <div class="units-grid container-eolsActive">
-                <!-- Units will be loaded here -->
-            </div>
-        </div>
+                <div class="units-grid container-eolsApproved" role="region" aria-live="polite">
+                    <!-- Units will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Pending Section -->
+            <div id="forscroll-pending"></div>
+            <section class="section-container" aria-labelledby="pending-title">
+                <div class="section-header">
+                    <div class="section-icon" 
+                        style="background: linear-gradient(135deg, #facc15 0%, #f59e0b 100%);" 
+                        aria-hidden="true">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+
+                    <h2 class="section-title" id="pending-title">Pending Units</h2>
+                    <div class="section-count" id="pendingCount">0</div>
+                </div>
+                <div class="units-grid container-eolsPending" role="region" aria-live="polite">
+                    <!-- Units will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Active Section -->
+            <div id="forscroll-active"></div>
+            <section class="section-container" aria-labelledby="active-title">
+                <div class="section-header">
+                    <div class="section-icon" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);" aria-hidden="true">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <h2 class="section-title" id="active-title">Active Units</h2>
+                    <div class="section-count" id="activeCount">0</div>
+                </div>
+                <div class="units-grid container-eolsActive" role="region" aria-live="polite">
+                    <!-- Units will be loaded here -->
+                </div>
+            </section>
+        </main>
     </div>
 
-
+        <!-- Go to Top Button -->
+    <button id="goTopBtn" title="Go to top">
+        <img src="https://cdn-icons-png.flaticon.com/512/992/992534.png" alt="icon" width="20" height="20">
+    </button>
 </body>
 </html>
