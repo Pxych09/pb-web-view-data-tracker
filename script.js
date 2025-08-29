@@ -1,6 +1,3 @@
-// ===========================
-// CONFIGURATION & CONSTANTS
-// ===========================
 const CONFIG = {
     DEPLOYMENT_URL: "https://script.google.com/macros/s/AKfycbyooi8owqIXu0205Ikg21m1_ETWwYMUtPow0V1asNXr0aXK_2_s3aBs6vVL-j9Ekf5M/exec",
     SHEETS: ['Terminated', 'Contract Signed', 'Verified', 'Approved', 'Actives', 'Pending'],
@@ -17,9 +14,16 @@ const SHEET_CONFIG = [
     { name: "Pending", container: "container-eolsPending", counter: "totalPending", sectionCounter: "pendingCount" }
 ];
 
-// ===========================
-// DATA MANAGEMENT
-// ===========================
+var thisMonth2025EOLs = '2025-09';
+
+// Convert to a Date (day is needed, so default to first of month)
+let date_thismonthEOLFormatted = new Date(thisMonth2025EOLs + '-01');
+let thismonthEOLFormatted = date_thismonthEOLFormatted.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long'
+});
+document.getElementById('monthEOLFormatted').innerHTML = `${thismonthEOLFormatted}`
+
 class DataManager {
     constructor() {
         this.allUnitsData = {};
@@ -27,17 +31,17 @@ class DataManager {
     }
 
     async fetchJSON(sheetName = "") {
-        console.log(`🔄 Fetching data from sheet: "${sheetName}"`);
+        // console.log(`🔄 Fetching data from sheet: "${sheetName}"`);
         try {
             const url = `${CONFIG.DEPLOYMENT_URL}?sheet=${encodeURIComponent(sheetName)}`;
             const response = await fetch(url, { method: "GET", mode: "cors" });
 
-            console.log(`📥 Response status: ${response.status} ${response.statusText}`);
+            // console.log(`📥 Response status: ${response.status} ${response.statusText}`);
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             
             const jsonData = await response.json();
-            console.log(`✅ Successfully fetched ${jsonData.length} rows from "${sheetName}"`);
-            console.log(`📊 Sample data from "${sheetName}":`, jsonData.slice(0, 2));
+            // console.log(`✅ Successfully fetched ${jsonData.length} rows from "${sheetName}"`);
+            // console.log(`📊 Sample data from "${sheetName}":`, jsonData.slice(0, 2));
             
             return jsonData;
         } catch (err) {
@@ -47,15 +51,15 @@ class DataManager {
     }
 
     async loadAllData() {
-        console.log(`🚀 Loading all data for searching...`);
+        // console.log(`🚀 Loading all data for searching...`);
         
         const loadPromises = CONFIG.SHEETS.map(async (sheet) => {
-            console.log(`📋 Processing sheet: "${sheet}"`);
+            // console.log(`📋 Processing sheet: "${sheet}"`);
             const data = await this.fetchJSON(sheet);
             if (data) {
                 const unitsWithData = data.filter(row => row["Unit"]);
                 this.allUnitsData[sheet] = unitsWithData;
-                console.log(`✅ Stored ${unitsWithData.length} units from "${sheet}"`);
+                // console.log(`✅ Stored ${unitsWithData.length} units from "${sheet}"`);
             } else {
                 console.log(`❌ Failed to load data from "${sheet}"`);
             }
@@ -72,7 +76,7 @@ class DataManager {
         console.log(`🔍 Searching for units with query: "${query}"`);
         
         if (!query.trim()) {
-            console.log(`⚠️ Empty search query, clearing results`);
+            // console.log(`⚠️ Empty search query, clearing results`);
             UIManager.clearSearchResults();
             return;
         }
@@ -95,7 +99,7 @@ class DataManager {
             console.log(`📊 Found ${sheetMatches} matches in "${sheetName}"`);
         });
 
-        console.log(`🎯 Total search results: ${results.length}`);
+        // console.log(`🎯 Total search results: ${results.length}`);
         UIManager.displaySearchResults(results, query);
     }
 
@@ -103,36 +107,36 @@ class DataManager {
         const query = document.getElementById('searchInput')?.value || '';
         const loadingEl = document.getElementById('searchLoading');
         
-        console.log(`🔍 Handling search input: "${query}"`);
+        // console.log(`🔍 Handling search input: "${query}"`);
         clearTimeout(this.searchTimeout);
         
         if (!query.trim()) {
-            console.log(`⚠️ Empty query, clearing results`);
+            // console.log(`⚠️ Empty query, clearing results`);
             UIManager.clearSearchResults();
             if (loadingEl) loadingEl.style.display = 'none';
             return;
         }
 
-        console.log(`⏳ Showing loading indicator and setting ${CONFIG.SEARCH_DEBOUNCE}ms delay`);
+        // console.log(`⏳ Showing loading indicator and setting ${CONFIG.SEARCH_DEBOUNCE}ms delay`);
         if (loadingEl) loadingEl.style.display = 'block';
         
         this.searchTimeout = setTimeout(() => {
-            console.log(`🚀 Executing search after delay`);
+            // console.log(`🚀 Executing search after delay`);
             this.searchUnits(query);
             if (loadingEl) loadingEl.style.display = 'none';
-            console.log(`✅ Search completed`);
+            // console.log(`✅ Search completed`);
         }, CONFIG.SEARCH_DEBOUNCE);
     }
 
     filterUnitsByMoveOut(period) {
-        console.log(`🔍 Filtering units by move-out period: "${period}"`);
+        // console.log(`🔍 Filtering units by move-out period: "${period}"`);
         const targetDate = DateUtils.getTargetDateString(period);
         
-        console.log(`🎯 Target date for filtering: "${targetDate}"`);
+        // console.log(`🎯 Target date for filtering: "${targetDate}"`);
         const filteredUnits = [];
         
         Object.keys(this.allUnitsData).forEach(sheetName => {
-            console.log(`🔍 Searching in sheet "${sheetName}" (${this.allUnitsData[sheetName].length} units)`);
+            // console.log(`🔍 Searching in sheet "${sheetName}" (${this.allUnitsData[sheetName].length} units)`);
             let sheetMatches = 0;
             
             this.allUnitsData[sheetName].forEach((unit) => {
@@ -152,11 +156,37 @@ class DataManager {
         console.log(`🎯 Total filtered units for "${period}": ${filteredUnits.length}`);
         return filteredUnits;
     }
+
+    filterUnitsByThisMonth2025() {
+        // console.log(`🔍 Filtering active units with move-out in September 2025`);
+        const filteredUnits = [];
+        const sheetName = 'Actives';
+        
+        if (!this.allUnitsData[sheetName]) {
+            console.log(`❌ No data available for "${sheetName}" sheet`);
+            return filteredUnits;
+        }
+
+        console.log(`🔍 Searching in sheet "${sheetName}" (${this.allUnitsData[sheetName].length} units)`);
+        let sheetMatches = 0;
+
+        this.allUnitsData[sheetName].forEach((unit) => {
+            const moveOutDate = DateUtils.normalizeDateString(unit["Move-Out"]);
+            if (moveOutDate && moveOutDate.startsWith(thisMonth2025EOLs)) {
+                filteredUnits.push({ ...unit, sheetName });
+                sheetMatches++;
+                if (sheetMatches <= CONFIG.LOG_SAMPLE_SIZE) {
+                    console.log(`✅ Match found in "${sheetName}": Unit "${unit["Unit"]}" moving out on "${moveOutDate}"`);
+                }
+            }
+        });
+
+        console.log(`📊 Found ${sheetMatches} matches in "${sheetName}"`);
+        console.log(`🎯 Total filtered units for this month ${thisMonth2025EOLs} 2025: ${filteredUnits.length}`);
+        return filteredUnits;
+    }
 }
 
-// ===========================
-// DATE UTILITIES
-// ===========================
 class DateUtils {
     static formatDate(isoString) {
         if (!isoString) {
@@ -221,9 +251,6 @@ class DateUtils {
     }
 }
 
-// ===========================
-// UI MANAGEMENT
-// ===========================
 class UIManager {
     static countBuildings(data) {
         console.log(`🏢 Counting buildings from ${data.length} units`);
@@ -285,14 +312,12 @@ class UIManager {
         if (statCard) {
             console.log(`🏢 Updating stat card with building breakdown`);
             
-            // Remove existing building breakdown
             const existingBreakdown = statCard.querySelector('.stat-buildings');
             if (existingBreakdown) {
                 console.log(`🗑️ Removing existing building breakdown`);
                 existingBreakdown.remove();
             }
 
-            // Add building breakdown
             if (Object.keys(buildingCounts).length > 0) {
                 const buildingHTML = `
                     <div class="stat-buildings">
@@ -380,6 +405,49 @@ class UIManager {
         console.log(`✅ Successfully populated container "${containerId}" with ${units.length} units`);
     }
 
+    static displayMoveOutUnitsForThisMonth(units, containerId) {
+        console.log(units, " units found");
+        const container = document.getElementById(containerId);
+
+        const conDetails = document.querySelector('.side-details');
+        
+        if (!container) {
+            console.error(`❌ Container with ID "${containerId}" not found`);
+            return;
+        }
+        
+        if (units.length === 0) {
+            console.log(`ℹ️ No units to display, showing empty state`);
+            container.innerHTML = `
+                <div class="no-moveout-units">
+                    <i class="fas fa-check-circle no-moveout-icon"></i>
+                    <div class="no-moveout-text">No move-outs for this period</div>
+                </div>
+            `;
+            return;
+        }
+        // console.log(units[0]["Lease Status"], "--------------------------UNITS")
+        container.insertAdjacentHTML("beforebegin", `<div id="thisMonth2025UnitsClass">${units.length} ${units[0]["Lease Status"]} results.</div>`)
+        container.innerHTML = units.map((unit, index) => {
+            const statusClass = unit.sheetName.toLowerCase().replace(' ', '-');
+            const statusDisplay = unit.sheetName === 'Actives' ? 'Active' : unit.sheetName;
+            
+            return this.createThisMoveoutMonthCard(unit, statusClass, statusDisplay, index);
+        }).join('');
+        
+        console.log(`✅ Successfully populated container "${containerId}" with ${units.length} units`);
+    }
+            
+    // <div class="thisMonthEOL-${index}" onclick="checkDetails(this)"> 
+    static createThisMoveoutMonthCard(unit, index) {
+        return `
+            <div class="thisMonthEOL-${index}" onclick="checkDetails(this)"> 
+            <span> ${unit["Unit"] || 'N/A'}</span>
+            <span> (${unit["Lease ID"]})</span>
+            </div>
+        `
+    }
+
     static createMoveOutUnitCard(unit, statusClass, statusDisplay, index) {
         if (index < CONFIG.LOG_SAMPLE_SIZE) {
             console.log(`🔨 Processing unit ${index}: "${unit["Unit"]}" (${statusDisplay})`);
@@ -407,6 +475,7 @@ class UIManager {
                         { label: 'Building', value: unit["Building"] },
                         { label: 'Unit Rate (2025)', value: unit["Rental Rate: 2025"] },
                         { label: 'Add-Ons', value: unit["Add-On Agreements: Add-ons Name"] },
+                        { label: 'Add-Ons Code', value: unit["Add-On Agreements: Add-ons Code"] },
                         { label: 'Rental Unit Promo', value: unit["Promo Name: Rental"] },
                         { label: 'Add-on Promo', value: unit["Promo Name: Addons"] }
                     ])}
@@ -574,7 +643,6 @@ class UIManager {
     static switchMoveOutTab(period) {
         console.log(`📋 Switching to move-out tab: "${period}"`);
         
-        // Update active tab
         document.querySelectorAll('.moveout-tab').forEach(tab => {
             tab.classList.remove('active');
         });
@@ -587,7 +655,6 @@ class UIManager {
             console.error(`❌ Tab not found for period: "${period}"`);
         }
         
-        // Show corresponding units
         document.querySelectorAll('.moveout-units').forEach(units => {
             units.style.display = 'none';
         });
@@ -620,9 +687,6 @@ class UIManager {
     }
 }
 
-// ===========================
-// AUTH MANAGEMENT
-// ===========================
 class AuthManager {
     static checkAuthentication() {
         const isLoggedIn = sessionStorage.getItem('isLoggedIn');
@@ -655,7 +719,7 @@ class AuthManager {
             
             if (welcomeEl) {
                 welcomeEl.textContent = `Welcome, ${username}!`;
-                console.log(`✅ Updated welcome message`);
+                // console.log(`✅ Updated welcome message`);
             }
             
             if (avatarEl) {
@@ -666,9 +730,6 @@ class AuthManager {
     }
 }
 
-// ===========================
-// MAIN APPLICATION CLASS
-// ===========================
 class DashboardApp {
     constructor() {
         this.dataManager = new DataManager();
@@ -693,7 +754,6 @@ class DashboardApp {
         const validUnits = data.filter(row => row["Unit"]);
         console.log(`📊 Filtered data: ${validUnits.length} units with valid Unit field from ${data.length} total rows`);
         
-        // Count buildings and update UI
         const buildingCounts = UIManager.countBuildings(validUnits);
         UIManager.updateCounters(name, validUnits.length, counter, sectionCounter);
         UIManager.updateStatCard(counter, buildingCounts);
@@ -704,7 +764,6 @@ class DashboardApp {
             return;
         }
 
-        // Render unit cards
         console.log(`🏗️ Building unit cards for ${validUnits.length} units`);
         containerElement.innerHTML = '';
         
@@ -721,7 +780,6 @@ class DashboardApp {
         const loadingEl = document.getElementById('moveoutLoading');
         if (loadingEl) loadingEl.style.display = 'block';
         
-        // Wait for all data to be loaded
         if (Object.keys(this.dataManager.allUnitsData).length === 0) {
             console.log(`📊 No data loaded yet, loading all data first...`);
             await this.dataManager.loadAllData();
@@ -729,15 +787,12 @@ class DashboardApp {
             console.log(`✅ Data already loaded, proceeding with filtering`);
         }
         
-        // Filter and display units for each period
-        console.log(`🔍 Filtering units for all periods...`);
         const periods = [
             { name: 'yesterday', units: this.dataManager.filterUnitsByMoveOut('yesterday') },
             { name: 'today', units: this.dataManager.filterUnitsByMoveOut('today') },
             { name: 'tomorrow', units: this.dataManager.filterUnitsByMoveOut('tomorrow') }
         ];
         
-        // Update counts and display units
         periods.forEach(({ name, units }) => {
             const countEl = document.getElementById(`${name}Count`);
             if (countEl) {
@@ -748,13 +803,33 @@ class DashboardApp {
         });
         
         if (loadingEl) loadingEl.style.display = 'none';
-        console.log(`✅ Move-out alerts loaded successfully`);
+        // console.log(`✅ Move-out alerts loaded successfully`);
+    }
+
+    async loadThisMonth2025MoveOuts() {
+
+        // console.log(`🚨 Loading September 2025 move-out alerts...`);
+        const loadingEl = document.getElementById('thisMonthmoveoutLoading');
+        if (loadingEl) loadingEl.style.display = 'block';
+        
+        if (Object.keys(this.dataManager.allUnitsData).length === 0) {
+            console.log(`📊 No data loaded yet, loading all data first...`);
+            await this.dataManager.loadAllData();
+        } else {
+            console.log(`✅ Data already loaded, proceeding with filtering`);
+        }
+        
+        const units = this.dataManager.filterUnitsByThisMonth2025();
+        //UIManager.displayMoveOutUnits(units, 'september2025Units');
+        UIManager.displayMoveOutUnitsForThisMonth(units, 'thisMonth2025Units');
+        
+        if (loadingEl) loadingEl.style.display = 'none';
+        console.log(`✅ September 2025 move-out alerts loaded successfully`);
     }
 
     setupEventListeners() {
         console.log(`🔧 Setting up event listeners...`);
         
-        // Search functionality
         const searchInput = document.getElementById('searchInput');
         if (searchInput) {
             searchInput.addEventListener('input', () => this.dataManager.handleSearch());
@@ -769,7 +844,6 @@ class DashboardApp {
             console.error(`❌ Search input element not found`);
         }
 
-        // Move-out tab switching
         const moveoutTabs = document.querySelectorAll('.moveout-tab');
         if (moveoutTabs.length > 0) {
             moveoutTabs.forEach((tab) => {
@@ -793,23 +867,17 @@ class DashboardApp {
             return;
         }
         
-        // Set user info
         AuthManager.setupUserInfo();
-
-        // Load all data for searching first
-        console.log(`📊 Loading all data for search functionality...`);
+        // console.log(`📊 Loading all data for search functionality...`);
         await this.dataManager.loadAllData();
         console.log(`✅ All data loaded for searching`);
-
-        // Set up event listeners
         this.setupEventListeners();
-
-        // Load move-out alerts
-        console.log(`🚨 Loading move-out alerts...`);
+        // console.log(`🚨 Loading move-out alerts...`);
         await this.loadMoveOutAlerts();
-        console.log(`✅ Move-out alerts loaded`);
-
-        // Load and render all sheet data
+        // console.log(`✅ Move-out alerts loaded`);
+        // console.log(`🚨 Loading September 2025 move-out alerts...`);
+        await this.loadThisMonth2025MoveOuts();
+        // console.log(`✅ September 2025 move-out alerts loaded`);
         console.log(`🎨 Loading and rendering all sheet data...`);
         const renderPromises = SHEET_CONFIG.map(config => this.renderSheet(config));
         await Promise.all(renderPromises);
@@ -818,15 +886,12 @@ class DashboardApp {
     }
 }
 
-// ===========================
-// GLOBAL FUNCTIONS (for backwards compatibility)
-// ===========================
 function toggleUnit(header) {
     const card = header.parentElement;
     const unitName = card.querySelector('.unit-name').textContent;
     const isExpanding = !card.classList.contains('expanded');
     
-    console.log(`🔄 Toggling unit card for "${unitName}" - ${isExpanding ? 'expanding' : 'collapsing'}`);
+    // console.log(`🔄 Toggling unit card for "${unitName}" - ${isExpanding ? 'expanding' : 'collapsing'}`);
     card.classList.toggle('expanded');
 }
 
@@ -838,19 +903,14 @@ function switchMoveOutTab(period) {
     UIManager.switchMoveOutTab(period);
 }
 
-// ===========================
-// APPLICATION INITIALIZATION
-// ===========================
 const dashboardApp = new DashboardApp();
 
-// Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     dashboardApp.init().catch(error => {
         console.error('🚨 Dashboard initialization failed:', error);
     });
 });
 
-// ===== Go To Top =====
 const goTopBtn = document.getElementById("goTopBtn");
 
 window.onscroll = function () {
@@ -861,7 +921,6 @@ window.onscroll = function () {
   }
 };
 
-// Smooth scroll to top
 goTopBtn.onclick = function () {
   window.scrollTo({ top: 0, behavior: "smooth" });
 };
