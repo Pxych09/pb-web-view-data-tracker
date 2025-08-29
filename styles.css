@@ -1437,3 +1437,64 @@ input:focus,
     width: 100%; height: 100%;
     position: absolute;
 }
+
+
+aside.this-month-eols {
+    border: 1px solid red;
+    padding: 1em;
+    margin-bottom: 1em;
+    border-radius: 8px;
+    height: 300px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* grid-auto-flow: dense; */
+    overflow: hidden;
+    gap: 1em;
+    background-color: #FAF7F3;
+}
+
+aside.this-month-eols > div {
+    /* border: 1px solid rgb(84, 68, 7); */
+    box-shadow: 0 1px 2px 0px #333;
+}
+
+aside > .aside-info {
+    grid-row: auto;
+    background-color: #F0E4D3;
+    padding: 10px;
+    grid-column: span 3;
+}
+aside > .aside-lists {
+    grid-column: span 2;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    font-family: Arial, Helvetica, sans-serif;
+}
+aside > .side-details {
+    background-color: #f2f2f2;
+    display: grid;
+    gap: .5em;
+}
+#thisMonth2025UnitsClass {
+    position: sticky;
+    top: 0;
+    background-color: #D1A980;
+    font-weight: bold;
+    color: #F0E4D3;
+    text-shadow: 0px 1px 2px #222;
+    text-align: center;
+    padding-block: 10px;
+}
+.thisMonthEOL-actives {
+    padding: 5px;
+    cursor: pointer;
+    text-align: center;
+    color: #281c1a;
+    font-size: smaller;
+}
+.thisMonthEOL-actives:nth-child(even) {
+    background-color: #DCC5B2;
+}
+.thisMonthEOL-actives:nth-child(odd) {
+    background-color: #F0E4D3;
+}
