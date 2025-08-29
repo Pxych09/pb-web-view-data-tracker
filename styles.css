@@ -1204,10 +1204,6 @@ body {
         /* gap: var(--spacing-md); */
     }
 
-    .stat-icon {
-        display: none;
-    }
-
     .stat-content {
         margin: 0;
     }
@@ -1219,6 +1215,13 @@ body {
 
     .stat-label {
         font-size: 13px;
+    }
+
+    .stats-section .stat-card:hover .stat-icon {
+        display: none;
+    }
+    .stats-section .stat-card:hover .stat-number {
+        opacity: 1;
     }
 
     /* Mobile-specific stat card colors */
@@ -1351,6 +1354,23 @@ body {
 
     .moveout-unit-card {
         margin-bottom: 6px;
+    }
+    .moveout-unit-card {
+        /* border: 1px solid red; */
+        padding: 0;
+    }
+    .moveout-unit-details {
+        border: none;
+        border-radius: 0;
+        outline: 0; margin: 0;
+        padding-inline: 1.5em;
+    }
+    .moveout-unit-header {
+        padding: 1.5em;
+        padding-bottom: 0em;
+    }
+    .moveout-date-info > span{
+        border-style: dotted;
     }
 }
 
