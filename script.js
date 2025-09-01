@@ -427,11 +427,11 @@ class UIManager {
             return;
         }
         // console.log(units[0]["Lease Status"], "--------------------------UNITS")
-        container.insertAdjacentHTML("beforebegin", `<div id="thisMonth2025UnitsClass">${units.length} ${units[0]["Lease Status"]} results.</div>`)
+        document.getElementById('monthEOLFormatted').insertAdjacentHTML("afterend", `<span id="thisMonth2025UnitsClass"> ${units.length} ${units[0]["Lease Status"]} results.</span>`);
+        container.insertAdjacentHTML("beforebegin", `<div class="det-icon"><i class="fa-regular fa-building"></i> Lists:</div>`);
         container.innerHTML = units.map((unit, index) => {
             const statusClass = unit.sheetName.toLowerCase().replace(' ', '-');
             const statusDisplay = unit.sheetName === 'Actives' ? 'Active' : unit.sheetName;
-            
             return this.createThisMoveoutMonthCard(unit, statusClass, statusDisplay, index);
         }).join('');
         
@@ -439,13 +439,13 @@ class UIManager {
     }
             
     // <div class="thisMonthEOL-${index}" onclick="checkDetails(this)"> 
-    static createThisMoveoutMonthCard(unit, index) {
+    static createThisMoveoutMonthCard(unit, statusClass, statusDisplay, index) {
         return `
-            <div class="thisMonthEOL-${index}" onclick="checkDetails(this)"> 
+            <div class="thisMonthEOL-${statusClass} thisMonthEOL-${index}" data-index="${index}"> 
             <span> ${unit["Unit"] || 'N/A'}</span>
             <span> (${unit["Lease ID"]})</span>
             </div>
-        `
+        `;
     }
 
     static createMoveOutUnitCard(unit, statusClass, statusDisplay, index) {
@@ -464,7 +464,7 @@ class UIManager {
                         <span class="moveout-date">${DateUtils.formatDate(unit["Move-Out"])}</span>
                     </div>
                 </div>
-                <div class="moveout-unit-details">
+                <div class="moveout-unit-details hidden">
                     ${this.createMoveOutDetailItems([
                         { label: 'Lease ID', value: unit["Lease ID"] },
                         { label: 'COL ID', value: unit["COL ID"] },
@@ -621,8 +621,31 @@ class UIManager {
                     { label: 'Unit Promo', value: unit["Promo Name: Rental"] },
                     { label: 'Add-on Promo', value: unit["Promo Name: Addons"] }
                 ]
+            },{
+                title: 'B2B Details',
+                items: [
+                    { label: 'B2B Representative Email', value: unit["B2B Profile Representative: Email"] },
+                    { label: 'B2B Profile Name', value: unit["B2B Profile Name"] }
+                ]
             }
         ];
+
+        if (unit.sheetName === 'Pending') {
+            groups.push({
+                title: 'Link Forms',
+                items: [
+                    { label: 'Lease Application Approval Form Link', value: `<a href="https://script.google.com/a/macros/pointblue.ph/s/AKfycbz_OFe9HtW15HCkNmgpr1XLAcSx_y5XErFZBO-YupZfd64MW-P8JopRaowGQXRD4idezg/exec?leaseid=${unit['Lease ID']} target="_blank">Open ${unit['Unit']}</a>` },
+                ]
+            });
+        }
+        if (unit.sheetName === 'Actives') {
+            groups.push({
+                title: 'Link Forms',
+                items: [
+                    { label: 'Lease Editor Form Link', value: `<a href="https://script.google.com/a/macros/pointblue.ph/s/AKfycbzbzsS53LFj8BZKXfe_ZScY3yWBE1fkGeUCAyO0BVfls53TNtAqeWtPvZJ0WHCF7zZR/exec?leaseid=${unit['Lease ID']} target="_blank">Open ${unit['Unit']}</a>` },
+                ]
+            });
+        }
 
         return groups.map(group => `
             <div class="result-detail-group">
@@ -857,6 +880,21 @@ class DashboardApp {
         } else {
             console.error(`❌ No move-out tabs found`);
         }
+
+        // Add listener for thisMonthEOL cards
+        const thisMonthContainer = document.getElementById('thisMonth2025Units');
+        if (thisMonthContainer) {
+            thisMonthContainer.addEventListener('click', (e) => {
+                const target = e.target.closest('[class*="thisMonthEOL-"]');
+                if (target) {
+                    console.log(`🔍 Clicked on move-out unit card`);
+                    checkDetails(target);
+                }
+            });
+            console.log(`✅ Attached event listener for thisMonthEOL cards`);
+        } else {
+            console.error(`❌ thisMonth2025Units container not found`);
+        }
     }
 
     async init() {
@@ -884,6 +922,7 @@ class DashboardApp {
         console.log(`✅ All sheets rendered successfully`);
         console.log(`🎉 Dashboard initialization completed successfully`);
     }
+
 }
 
 function toggleUnit(header) {
@@ -924,3 +963,54 @@ window.onscroll = function () {
 goTopBtn.onclick = function () {
   window.scrollTo({ top: 0, behavior: "smooth" });
 };
+
+// Add this function near the bottom of script.js, after the DashboardApp class definition
+function checkDetails(el) {
+    console.log(`🔍 Checking details for element:`, el);
+    // Extract the index from the element's class (e.g., thisMonthEOL-0)
+    const classList = el.className.split('-');
+    const index = parseInt(classList[classList.length - 1], 10);
+    console.log(`🔢 Extracted index: ${index}`);
+
+    // Access the unit data from the DashboardApp's DataManager
+    const units = dashboardApp.dataManager.filterUnitsByThisMonth2025();
+    const unit = units[index];
+
+
+    if (!unit) {
+        console.error(`❌ No unit found at index ${index}`);
+        return;
+    }
+
+    // Remove 'active' class from all thisMonthEOL elements
+    document.querySelectorAll('[class*="thisMonthEOL-"]').forEach(item => {
+        item.classList.remove('active');
+    });
+
+    // Add 'active' class to the clicked element
+    el.classList.add('active');
+
+    console.log(`✅ Found unit: "${unit["Unit"]}"`);
+
+    // Update the .side-details container with unit details
+    const detailsContainer = document.querySelector('.side-details');
+    if (!detailsContainer) {
+        console.error(`❌ Side details container not found`);
+        return;
+    }
+    // Create HTML for unit details
+    detailsContainer.innerHTML = `
+        <div>Selected Unit: <span>${unit["Unit"]}</span></div>
+        <div>Move-In: <span>${DateUtils.formatDate(unit["Move-In"])}</span></div>
+        <div>Move-Out: <span>${DateUtils.formatDate(unit["Move-Out"])}</span></div>
+        <div>Duration: <span>${unit["Duration"]}</span></div>
+        <div>Class: <span>${unit["Class"]}</span></div>
+        <div>Unit Status: <span>${unit["Unit Slot"]}</span></div>
+        <div>Add-Ons: <span>${unit["Add-On Agreements: Add-ons Name"] || "None"}</span></div>
+        <div>Promo: <span>${unit["Promo Name: Rental"] || "None"}</span></div>
+        <div>Lease Editor Link: <a title="Click to open its lease editor." target="_blank" href='https://script.google.com/a/macros/pointblue.ph/s/AKfycbzbzsS53LFj8BZKXfe_ZScY3yWBE1fkGeUCAyO0BVfls53TNtAqeWtPvZJ0WHCF7zZR/exec?leaseid=${unit['Lease ID']}'>Open Lease Editor for Unit ${unit["Unit"]}</a></div>
+        
+    `
+    
+    console.log(`✅ Updated side-details with unit "${unit["Unit"]}"`);
+}
