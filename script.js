@@ -634,7 +634,7 @@ class UIManager {
             groups.push({
                 title: 'Link Forms',
                 items: [
-                    { label: 'Lease Application Approval Form Link', value: `<a href="https://script.google.com/a/macros/pointblue.ph/s/AKfycbz_OFe9HtW15HCkNmgpr1XLAcSx_y5XErFZBO-YupZfd64MW-P8JopRaowGQXRD4idezg/exec?leaseid=${unit['Lease ID']} target="_blank">Open ${unit['Unit']}</a>` },
+                    { label: 'Lease Application Approval Form Link', value: `<a href="https://script.google.com/a/macros/pointblue.ph/s/AKfycbz_OFe9HtW15HCkNmgpr1XLAcSx_y5XErFZBO-YupZfd64MW-P8JopRaowGQXRD4idezg/exec?leaseid=${unit['Lease ID']}" target="_blank">Open ${unit['Unit']}</a>` },
                 ]
             });
         }
@@ -642,7 +642,7 @@ class UIManager {
             groups.push({
                 title: 'Link Forms',
                 items: [
-                    { label: 'Lease Editor Form Link', value: `<a href="https://script.google.com/a/macros/pointblue.ph/s/AKfycbzbzsS53LFj8BZKXfe_ZScY3yWBE1fkGeUCAyO0BVfls53TNtAqeWtPvZJ0WHCF7zZR/exec?leaseid=${unit['Lease ID']} target="_blank">Open ${unit['Unit']}</a>` },
+                    { label: 'Lease Editor Form Link', value: `<a href="https://script.google.com/a/macros/pointblue.ph/s/AKfycbzbzsS53LFj8BZKXfe_ZScY3yWBE1fkGeUCAyO0BVfls53TNtAqeWtPvZJ0WHCF7zZR/exec?leaseid=${unit['Lease ID']}" target="_blank">Open ${unit['Unit']}</a>` },
                 ]
             });
         }
