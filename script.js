@@ -573,7 +573,7 @@ class UIManager {
                 items: [
                     { label: 'Lease ID', value: unit["Lease ID"] },
                     { label: 'COL ID', value: unit["COL ID"] },
-                    { label: 'Building', value: unit["AP"] || unit["Building"] }
+                    { label: 'Building', value: `${unit["Building"]} (${unit["Building ID"]})` }
                 ]
             },
             {
@@ -589,7 +589,8 @@ class UIManager {
                 items: [
                     { label: 'Class', value: unit["Class"] },
                     { label: 'Unit Status', value: unit["Unit Slot"] },
-                    { label: 'Unit Rate (2025)', value: unit["Rental Rate: 2025"] }
+                    { label: 'Unit Rate (2025)', value: unit["Rental Rate: 2025"] },
+                    { label: 'Admin Fee', value: unit["Monthly Admin Fee"] }
                 ]
             },
             {
@@ -613,6 +614,17 @@ class UIManager {
                 items: [
                     { label: 'Add-Ons', value: unit["Add-On Agreements: Add-ons Name"] },
                     { label: 'Add-Ons Code', value: unit["Add-On Agreements: Add-ons Code"] }
+                ]
+            },
+            {
+                title: 'Monthly Rates',
+                items: [
+                    { label: 'Unit Rate', value: unit["Monthly Unit Rate"] },
+                    { label: 'Discount', value: unit["Monthy Unit Discount"] },
+                    { label: 'Net Monthly Rate', value: unit["Net Monthly Rate"] },
+                    { label: 'Addon(s) Monthly Rate', value: unit["Monthly Addon Rate"] },
+                    { label: 'Addon(s) Discount', value: unit["Monthly Addon Discount Rate"] },
+                    { label: 'Addon(s) Net Monthly Rate', value: unit["Net Monthly Addon Rate"] }
                 ]
             },
             {
@@ -643,6 +655,14 @@ class UIManager {
                 title: 'Link Forms',
                 items: [
                     { label: 'Lease Editor Form Link', value: `<a href="https://script.google.com/a/macros/pointblue.ph/s/AKfycbzbzsS53LFj8BZKXfe_ZScY3yWBE1fkGeUCAyO0BVfls53TNtAqeWtPvZJ0WHCF7zZR/exec?leaseid=${unit['Lease ID']}" target="_blank">Open ${unit['Unit']}</a>` },
+                ]
+            });
+        }
+        if (unit.sheetName === 'Contract Signed') {
+            groups.push({
+                title: 'Link Forms',
+                items: [
+                    { label: 'Verify Contract Form Link', value: `<a href="https://script.google.com/a/macros/pointblue.ph/s/AKfycbwhAxj9Qkk6uYxqb-bdEwxH1wNRNEBiqaiC8oxnvXagz_JNORngsnbSIMP8HaPR3w8pDA/exec?leaseid=${unit['Lease ID']}" target="_blank">Open ${unit['Unit']}</a>` },
                 ]
             });
         }
