@@ -1,6 +1,6 @@
 const CONFIG = {
     DEPLOYMENT_URL: "https://script.google.com/macros/s/AKfycbyooi8owqIXu0205Ikg21m1_ETWwYMUtPow0V1asNXr0aXK_2_s3aBs6vVL-j9Ekf5M/exec",
-    SHEETS: ['Terminated', 'Contract Signed', 'Verified', 'Approved', 'Actives', 'Pending'],
+    SHEETS: ['Terminated', 'Contract Signed', 'Verified', 'Approved', 'Actives', 'Pending', 'Sorted Actives'],
     SEARCH_DEBOUNCE: 300,
     LOG_SAMPLE_SIZE: 3
 };
@@ -42,7 +42,16 @@ class DataManager {
             const jsonData = await response.json();
             // console.log(`✅ Successfully fetched ${jsonData.length} rows from "${sheetName}"`);
             // console.log(`📊 Sample data from "${sheetName}":`, jsonData.slice(0, 2));
-            
+            // Test logging for Sorted Actives sheet
+            if (sheetName === "Sorted Actives") {
+                console.log(`🔍 TESTING - Sorted Actives sheet data:`, {
+                    totalRows: jsonData.length,
+                    sampleData: jsonData.slice(0, 5),
+                    columns: jsonData.length > 0 ? Object.keys(jsonData[0]) : [],
+                    unitsWithData: jsonData.filter(row => row["Unit"]).length
+                });
+            }
+
             return jsonData;
         } catch (err) {
             console.error(`❌ Fetch error for sheet "${sheetName}":`, err);
@@ -59,7 +68,7 @@ class DataManager {
             if (data) {
                 const unitsWithData = data.filter(row => row["Unit"]);
                 this.allUnitsData[sheet] = unitsWithData;
-                // console.log(`✅ Stored ${unitsWithData.length} units from "${sheet}"`);
+                console.log(`✅ Stored ${unitsWithData.length} units from "${sheet}"`);
             } else {
                 console.log(`❌ Failed to load data from "${sheet}"`);
             }
@@ -778,6 +787,125 @@ class DashboardApp {
         this.dataManager = new DataManager();
     }
 
+    async displaySortedActivesCustomUI() {
+        console.log(`🔄 Fetching and displaying "Sorted Actives" data in custom UI...`);
+
+        // Fetch the "Sorted Actives" data
+        const sortedActivesData = await this.dataManager.fetchJSON("Sorted Actives");
+
+        if (!sortedActivesData || sortedActivesData.length === 0) {
+            console.error(`❌ No data found for "Sorted Actives" sheet`);
+            const container = document.getElementById('sortedActivesCustomContainer');
+            if (container) {
+                container.innerHTML = `
+                    <div class="no-data">
+                        <i class="fas fa-inbox"></i>
+                        <p>No units found in Sorted Actives</p>
+                    </div>
+                `;
+            }
+            return;
+        }
+
+        // Log the data and properties for debugging
+        console.log(`📊 "Sorted Actives" Data (Total: ${sortedActivesData.length} units):`, sortedActivesData);
+        sortedActivesData.forEach((unit, index) => {
+            if (unit["Unit"]) {
+                console.log(`🔍 Unit ${index + 1} - ${unit["Unit"]}:`);
+                console.log(`  Properties:`);
+                Object.entries(unit).forEach(([key, value]) => {
+                    console.log(`    ${key}: ${value || 'N/A'}`);
+                });
+            }
+        });
+
+        // Filter valid units (with a Unit field)
+        const validUnits = sortedActivesData.filter(row => row["Unit"]);
+        console.log(`📊 Filtered ${validUnits.length} valid units from ${sortedActivesData.length} total rows`);
+
+        console.log("validUnits =>>>>>>>");
+        console.log(validUnits);
+
+        // Get the container
+        const container = document.getElementById('sortedActivesCustomContainer');
+        if (!container) {
+            console.error(`❌ Container "sortedActivesCustomContainer" not found`);
+            return;
+        }
+
+    const sortMonthText = validUnits[0]["Month/Year Filtered"];
+    const sortMonthCountText = validUnits[2]["Month/Year Filtered"];
+        // Clear the container and add a header
+        container.innerHTML = `
+            <div class="stat-card stat-sorted-actives">
+                <h2 class="stat-card-title">Sorted Actives Units for</h2>
+                <h2 class="stat-card-title">${sortMonthText} (${sortMonthCountText})</h2>
+            </div>
+        `;
+            // <div class="sorted-active-list"></div>
+
+        const listContainer = container.querySelector('.stat-sorted-actives');
+
+        // Display units
+        if (validUnits.length === 0) {
+            console.log(`ℹ️ No valid units to display, showing empty state`);
+            listContainer.innerHTML = `
+                <div class="no-data">
+                    <i class="fas fa-inbox"></i>
+                    <p>No units found in Sorted Actives</p>
+                </div>
+            `;
+            return;
+        }
+
+        // Create and append list items
+        validUnits.forEach((unit, index) => {
+            const listItem = this.createSortedActivesListItem(unit, index);
+            listContainer.appendChild(listItem);
+        });
+
+        console.log(`✅ Successfully displayed ${validUnits.length} units in sortedActivesCustomContainer`);
+    }
+
+    // Custom list item creation for Sorted Actives
+    createSortedActivesListItem(unit, index) {
+        if (index < CONFIG.LOG_SAMPLE_SIZE) {
+            console.log(`🔨 Creating Sorted Actives list item ${index}: "${unit["Unit"]}"`);
+        }
+
+        const listItem = document.createElement('div');
+        listItem.className = 'stat-card';
+        let formatDateMI = new Date(DateUtils.formatDate(unit["Move-In"])).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric"
+        });
+        let formatDateMO = new Date(DateUtils.formatDate(unit["Move-Out"])).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric"
+        });
+        listItem.innerHTML = `
+            <details>
+                <summary><h4>${unit["Unit"] || 'N/A'}</h4><h4>${formatDateMO}</h4></summary>
+                <div class="summary-info">
+                    <div><h5>Move-In</h5><h5>${DateUtils.formatDate(unit["Move-In"])}</h5></div>
+                    <div><h5>Move-Out</h5><h5>${DateUtils.formatDate(unit["Move-Out"])}</h5></div>
+                    <div><h5>Lease ID</h5><h5>${unit["Lease ID"]}</h5></div>
+                    <div><h5>Col ID</h5><h5>${unit["Col ID"]}</h5></div>
+                    <div><h5>Term</h5><h5>${unit["Duration"]}</h5></div>
+                    <div><h5>Class</h5><h5>${unit["Class"]}</h5></div>
+                    <div><h5>Unit Status</h5><h5>${unit["Unit Status"]}</h5></div>
+                    <div><h5>Monthly Rent</h5><h5>${unit["Monthly Rent"]}</h5></div>
+                    <div><h5>Promo(s)</h5><h5>${unit["Rental Promo"] || "None"}</h5></div>
+                    <div><h5>Add-Ons</h5><h5>${unit["Addons"] || "None"}</h5></div>
+                    <div><h5>Tenants</h5><h5>${unit["User: Names"]}</h5></div>
+                    <div><h5>Emails</h5><h5>${unit["User: Emails"]}</h5></div>
+                </div>
+            </details>
+        `;
+
+        return listItem;
+    }
+
     async renderSheet({ name, container, counter, sectionCounter }) {
         console.log(`🎨 Rendering data for sheet "${name}" in container ".${container}"`);
         const containerElement = document.querySelector(`.${container}`);
@@ -919,7 +1047,7 @@ class DashboardApp {
 
     async init() {
         console.log(`🚀 Dashboard initialization started`);
-        
+
         if (!AuthManager.checkAuthentication()) {
             console.log(`❌ Authentication failed, stopping initialization`);
             return;
@@ -935,6 +1063,7 @@ class DashboardApp {
         // console.log(`✅ Move-out alerts loaded`);
         // console.log(`🚨 Loading September 2025 move-out alerts...`);
         await this.loadThisMonth2025MoveOuts();
+        await this.displaySortedActivesCustomUI();
         // console.log(`✅ September 2025 move-out alerts loaded`);
         console.log(`🎨 Loading and rendering all sheet data...`);
         const renderPromises = SHEET_CONFIG.map(config => this.renderSheet(config));
