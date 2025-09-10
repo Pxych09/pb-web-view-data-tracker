@@ -1544,7 +1544,10 @@ aside.aside-card-info .stat-card details > .summary-info {
 #sortedActivesCustomContainer .stat-card-title:first-child {
     margin-bottom: 0;
 }
-
+#sortedActivesCustomContainer .stat-sorted-actives {
+    overflow-y: scroll;
+    height: 35dvh;
+}
 #thisMonth2025UnitsClass {
     font-weight: bold;
 }
