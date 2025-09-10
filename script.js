@@ -151,6 +151,7 @@ class DataManager {
             this.allUnitsData[sheetName].forEach((unit) => {
                 const moveOutDate = DateUtils.normalizeDateString(unit["Move-Out"]);
                 if (moveOutDate === targetDate) {
+                    if (sheetName != "Sorted Actives")
                     filteredUnits.push({ ...unit, sheetName });
                     sheetMatches++;
                     if (sheetMatches <= CONFIG.LOG_SAMPLE_SIZE) {
