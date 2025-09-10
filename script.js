@@ -461,7 +461,8 @@ class UIManager {
         if (index < CONFIG.LOG_SAMPLE_SIZE) {
             console.log(`🔨 Processing unit ${index}: "${unit["Unit"]}" (${statusDisplay})`);
         }
-        
+        if (statusDisplay != "Sorted Actives")
+            
         return `
             <div class="moveout-unit-card">
                 <div class="moveout-unit-header">
@@ -561,6 +562,7 @@ class UIManager {
         if (index < CONFIG.LOG_SAMPLE_SIZE) {
             console.log(`🔨 Processing search result ${index}: "${unit["Unit"]}" (${statusDisplay})`);
         }
+        if (statusDisplay != "Sorted Actives")
         
         return `
             <div class="search-result-card">
