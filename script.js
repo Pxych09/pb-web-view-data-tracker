@@ -436,6 +436,7 @@ class UIManager {
             return;
         }
         // console.log(units[0]["Lease Status"], "--------------------------UNITS")
+        document.querySelector('.side-details').innerHTML = `<h5 style='padding: 1em;'>Click unit to see details.</h5>`
         document.getElementById('monthEOLFormatted').insertAdjacentHTML("afterend", `<span id="thisMonth2025UnitsClass"> ${units.length} ${units[0]["Lease Status"]} results.</span>`);
         container.insertAdjacentHTML("beforebegin", `<div class="det-icon"><i class="fa-regular fa-building"></i> Lists:</div>`);
         container.innerHTML = units.map((unit, index) => {
@@ -462,7 +463,7 @@ class UIManager {
             console.log(`🔨 Processing unit ${index}: "${unit["Unit"]}" (${statusDisplay})`);
         }
         if (statusDisplay != "Sorted Actives")
-            
+
         return `
             <div class="moveout-unit-card">
                 <div class="moveout-unit-header">
