@@ -649,6 +649,7 @@ class UIManager {
             },{
                 title: 'B2B Details',
                 items: [
+                    { label: 'B2B Representative Name', value: unit["B2B Profile Representative: Name"] },
                     { label: 'B2B Representative Email', value: unit["B2B Profile Representative: Email"] },
                     { label: 'B2B Profile Name', value: unit["B2B Profile Name"] }
                 ]
