@@ -1,5 +1,5 @@
 const CONFIG = {
-    DEPLOYMENT_URL: "https://script.google.com/macros/s/AKfycbyooi8owqIXu0205Ikg21m1_ETWwYMUtPow0V1asNXr0aXK_2_s3aBs6vVL-j9Ekf5M/exec",
+    DEPLOYMENT_URL: "https://script.google.com/macros/s/AKfycbwM8PuHeDkU8okRWIzdfQRYdPsHOFQO-WT9nX0ZrKtTo8-LVuYN5uHb6szlD2TEXjXC/exec",
     SHEETS: ['Terminated', 'Contract Signed', 'Verified', 'Approved', 'Actives', 'Pending', 'Sorted Actives'],
     SEARCH_DEBOUNCE: 300,
     LOG_SAMPLE_SIZE: 3
