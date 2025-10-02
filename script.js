@@ -14,7 +14,7 @@ const SHEET_CONFIG = [
     { name: "Pending", container: "container-eolsPending", counter: "totalPending", sectionCounter: "pendingCount" }
 ];
 
-var thisMonth2025EOLs = '2025-09';
+var thisMonth2025EOLs = '2025-10';
 
 // Convert to a Date (day is needed, so default to first of month)
 let date_thismonthEOLFormatted = new Date(thisMonth2025EOLs + '-01');
